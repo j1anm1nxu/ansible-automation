@@ -1,5 +1,54 @@
 # AWS automation with Ansible
 
+---
+
+## Jim Xu
+
+### Clean up after running ansible-playbook
+
+* Get AWS resources
+
+```bash
+#
+# Select resources by tag Key=Name and its Value pattern matching
+#
+aws resourcegroupstaggingapi get-resources --tag-filters Key=Name --tags-per-page 100 | jq -r '.ResourceTagMappingList[] | . | select(.Tags[] | (.Key=="Name") and (.Value |select(test("ansible-3tier-arch"))))'
+#
+# Select resources by tag Key=Environment and its Value pattern matching
+#
+aws resourcegroupstaggingapi get-resources --tag-filters Key=Environment --tags-per-page 100 | jq -r '.ResourceTagMappingList[] | . | select(.Tags[] | (.Key=="Environment") and (.Value |select(test("ansible-3tier-arch"))))'
+#
+#
+#
+```
+
+* Parse AWS resource ARN
+
+```python
+def parse_arn(arn):
+    # http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+    elements = arn.split(':')
+    result = {'arn': elements[0],
+            'partition': elements[1],
+            'service': elements[2],
+            'region': elements[3],
+            'account': elements[4]
+           }
+    if len(elements) == 7:
+        result['resourcetype'], result['resource'] = elements[5:]
+    elif '/' not in elements[5]:
+        result['resource'] = elements[5]
+        result['resourcetype'] = None
+    else:
+        result['resourcetype'], result['resource'] = elements[5].split('/')
+    return result
+```
+* Take actions
+
+---
+
+## Overview
+
 This playbook installs and configures a three tier architecture for creating a VPC in Amazon Web services. It also sets up a VPN connection with the VPC along with a VPC peering connection. It contains a web layer, an application layer and a database layer. There are two EC2 instances running in two different availability zones in the web layer and the same for the application layer as well.
 
 The playbooks for VPN connection and VPC peering connection have also been provided seperately so that you can run them independently though you have to make same changes in the roles. Before running the playbook for VPC peering connection make sure that you change your AWS config file so as to include the access and secret key in it. Click [here](https://boto3.readthedocs.io/en/latest/guide/configuration.html#aws-config-file) to see the format.

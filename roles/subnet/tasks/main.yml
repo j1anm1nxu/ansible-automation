@@ -10,6 +10,8 @@
           Name: "{{subnet_name}}"
           Environment: "{{subnet_env}}"
   register: output
+  vars:
+    ansible_python_interpreter: python
 - set_fact:
     vpc_info: "{{ vpc_info | combine({ subnet_key: output}) }}"
 

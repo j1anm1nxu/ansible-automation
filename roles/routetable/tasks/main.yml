@@ -12,5 +12,7 @@
       - dest: "{{destination}}"
         gateway_id: "{{ gateway_id }}" 
   register: routetable_info
+  vars:
+    ansible_python_interpreter: python
 - set_fact:
     vpc_info: "{{ vpc_info | combine({ rt_name: routetable_info}) }}"

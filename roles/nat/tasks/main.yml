@@ -7,3 +7,5 @@
     region: "{{region}}"
     if_exist_do_not_create: true
   register: new_nat_gateway
+  vars:
+    ansible_python_interpreter: python

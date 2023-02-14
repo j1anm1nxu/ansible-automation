@@ -7,4 +7,5 @@
           cidr_block: "{{cidr_block}}"
           resource_tags: { "Environment":"{{tag_env}}" }
   register: vpc
- 
+  vars:
+    ansible_python_interpreter: python

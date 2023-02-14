@@ -1,0 +1,10 @@
+---
+- import_playbook : playbooks/vpc.yml
+- import_playbook : playbooks/igw.yml
+- import_playbook : playbooks/subnet.yml
+- import_playbook : playbooks/nat.yml
+- import_playbook : playbooks/routetable.yml
+
+
+
+
